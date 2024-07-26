@@ -359,7 +359,8 @@ impl PublicKey {
             SignatureScheme::Secp256r1 => Ok(PublicKey::Secp256r1(
                 (&Secp256r1PublicKey::from_bytes(key_bytes)?).into(),
             )),
-            SignatureScheme::PasskeyAuthenticator => Ok(PublicKey::Passkey(
+            SignatureScheme::PasskeyAuthenticator
+            | SignatureScheme::PasskeySessionAuthenticator => Ok(PublicKey::Passkey(
                 (&Secp256r1PublicKey::from_bytes(key_bytes)?).into(),
             )),
             _ => Err(eyre!("Unsupported curve")),
@@ -1003,7 +1004,8 @@ impl<S: SuiSignatureInner + Sized> SuiSignature for S {
 
         let (sig, pk) = &self.get_verification_inputs()?;
         match scheme {
-            SignatureScheme::ZkLoginAuthenticator => {} // Pass this check because zk login does not derive address from pubkey.
+            SignatureScheme::ZkLoginAuthenticator
+            | SignatureScheme::PasskeySessionAuthenticator => {} // Pass this check because these two schemes do not derive address from pubkey.
             _ => {
                 let address = SuiAddress::from(pk);
                 if author != address {
@@ -1664,6 +1666,7 @@ pub enum SignatureScheme {
     MultiSig,
     ZkLoginAuthenticator,
     PasskeyAuthenticator,
+    PasskeySessionAuthenticator,
 }
 
 impl SignatureScheme {
@@ -1676,6 +1679,7 @@ impl SignatureScheme {
             SignatureScheme::BLS12381 => 0x04, // This is currently not supported for user Sui Address.
             SignatureScheme::ZkLoginAuthenticator => 0x05,
             SignatureScheme::PasskeyAuthenticator => 0x06,
+            SignatureScheme::PasskeySessionAuthenticator => 0x07,
         }
     }
 
@@ -1695,6 +1699,7 @@ impl SignatureScheme {
             0x04 => Ok(SignatureScheme::BLS12381),
             0x05 => Ok(SignatureScheme::ZkLoginAuthenticator),
             0x06 => Ok(SignatureScheme::PasskeyAuthenticator),
+            0x07 => Ok(SignatureScheme::PasskeySessionAuthenticator),
             _ => Err(SuiError::KeyConversionError(
                 "Invalid key scheme".to_string(),
             )),
