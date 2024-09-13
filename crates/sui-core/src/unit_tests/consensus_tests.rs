@@ -222,6 +222,7 @@ pub fn make_consensus_adapter_for_test(
                                     vec![tx],
                                     &checkpoint_service,
                                     self.state.get_object_cache_reader().as_ref(),
+                                    self.state.get_transaction_cache_reader().as_ref(),
                                     &self.state.metrics,
                                     true,
                                 )
@@ -240,6 +241,7 @@ pub fn make_consensus_adapter_for_test(
                                 vec![tx],
                                 &checkpoint_service,
                                 self.state.get_object_cache_reader().as_ref(),
+                                self.state.get_transaction_cache_reader().as_ref(),
                                 &self.state.metrics,
                                 true,
                             )
