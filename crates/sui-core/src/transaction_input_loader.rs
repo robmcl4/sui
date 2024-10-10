@@ -18,7 +18,7 @@ use sui_types::{
         ReceivingObjectReadResult, ReceivingObjectReadResultKind, ReceivingObjects, TransactionKey,
     },
 };
-use tracing::instrument;
+use tracing::{error, instrument};
 
 pub(crate) struct TransactionInputLoader {
     cache: Arc<dyn ObjectCacheRead>,
@@ -161,7 +161,6 @@ impl TransactionInputLoader {
                         .get_or_init(|| {
                             shared_lock_store
                                 .get_shared_locks(tx_key)
-                                .expect("loading shared locks should not fail")
                                 .map(|locks| locks.into_iter().collect())
                         })
                         .as_ref()

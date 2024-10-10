@@ -1189,7 +1189,7 @@ impl ExecutionCacheCommit for WritebackCache {
     }
 
     fn persist_transaction(&self, tx: &VerifiedExecutableTransaction) -> SuiResult {
-        self.store.commit_transaction(tx)
+        self.store.persist_transaction(tx)
     }
 }
 

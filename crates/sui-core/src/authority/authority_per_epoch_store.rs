@@ -1311,12 +1311,14 @@ impl AuthorityPerEpochStore {
         }
         batch.write()?;
 
-        self.shared_version_assignments.remove(tx_key);
-
         if !matches!(tx_key, TransactionKey::Digest(_)) {
             self.executed_digests_notify_read.notify(tx_key, tx_digest);
         }
         Ok(())
+    }
+
+    pub(crate) fn remove_shared_version_assignments(&self, tx_key: &TransactionKey) {
+        self.shared_version_assignments.remove(tx_key);
     }
 
     pub fn revert_executed_transaction(&self, tx_digest: &TransactionDigest) -> SuiResult {
@@ -1562,8 +1564,10 @@ impl AuthorityPerEpochStore {
         tx_digest: &TransactionDigest,
         assigned_versions: &[(ObjectID, SequenceNumber)],
     ) -> SuiResult {
-        self.shared_version_assignments
-            .insert((*tx_digest).into(), assigned_versions.to_owned());
+        self.shared_version_assignments.insert(
+            TransactionKey::Digest(*tx_digest),
+            assigned_versions.to_owned(),
+        );
         Ok(())
     }
 
@@ -4944,14 +4948,10 @@ impl ConsensusCommitOutput {
 }
 
 impl GetSharedLocks for AuthorityPerEpochStore {
-    fn get_shared_locks(
-        &self,
-        key: &TransactionKey,
-    ) -> SuiResult<Option<Vec<(ObjectID, SequenceNumber)>>> {
-        Ok(self
-            .shared_version_assignments
+    fn get_shared_locks(&self, key: &TransactionKey) -> Option<Vec<(ObjectID, SequenceNumber)>> {
+        self.shared_version_assignments
             .get(key)
-            .map(|locks| locks.clone()))
+            .map(|locks| locks.clone())
     }
 }
 
