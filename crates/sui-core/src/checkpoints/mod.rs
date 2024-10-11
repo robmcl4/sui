@@ -810,7 +810,9 @@ impl CheckpointBuilder {
         }
     }
 
-    async fn run(mut self) {
+    async fn run(mut self, startup_wait: tokio::sync::oneshot::Receiver<()>) {
+        info!("CheckpointBuilder waiting for startup signal");
+        startup_wait.await.ok();
         info!("Starting CheckpointBuilder");
         loop {
             self.maybe_build_checkpoints().await;
@@ -2084,7 +2086,11 @@ impl CheckpointService {
         metrics: Arc<CheckpointMetrics>,
         max_transactions_per_checkpoint: usize,
         max_checkpoint_size_bytes: usize,
-    ) -> (Arc<Self>, JoinSet<()> /* Handle to tasks */) {
+    ) -> (
+        Arc<Self>,
+        JoinSet<()>,                      /* Handle to tasks */
+        tokio::sync::oneshot::Sender<()>, /* builder start-up sender */
+    ) {
         info!(
             "Starting checkpoint service with {max_transactions_per_checkpoint} max_transactions_per_checkpoint and {max_checkpoint_size_bytes} max_checkpoint_size_bytes"
         );
@@ -2106,7 +2112,9 @@ impl CheckpointService {
             max_transactions_per_checkpoint,
             max_checkpoint_size_bytes,
         );
-        tasks.spawn(monitored_future!(builder.run()));
+
+        let (tx, rx) = tokio::sync::oneshot::channel();
+        tasks.spawn(monitored_future!(builder.run(rx)));
 
         let aggregator = CheckpointAggregator::new(
             checkpoint_store.clone(),
@@ -2131,7 +2139,7 @@ impl CheckpointService {
             metrics,
         });
 
-        (service, tasks)
+        (service, tasks, tx)
     }
 
     #[cfg(test)]
@@ -2375,7 +2383,7 @@ mod tests {
             &epoch_store,
         ));
 
-        let (checkpoint_service, _tasks) = CheckpointService::spawn(
+        let (checkpoint_service, _tasks, startup) = CheckpointService::spawn(
             state.clone(),
             checkpoint_store,
             epoch_store.clone(),
@@ -2387,6 +2395,7 @@ mod tests {
             3,
             100_000,
         );
+        startup.send(()).unwrap();
 
         checkpoint_service
             .write_and_notify_checkpoint_for_testing(&epoch_store, p(0, vec![4], 0))
