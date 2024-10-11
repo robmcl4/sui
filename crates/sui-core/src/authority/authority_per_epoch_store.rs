@@ -1537,7 +1537,6 @@ impl AuthorityPerEpochStore {
         let mut quarantine = self.consensus_quarantine.write();
         quarantine.update_highest_executed_checkpoint(seq, self, &mut batch)?;
         batch.write()?;
-        //.update_finalized_checkpoint_sequence_number(seq, self, &mut batch)?;
 
         Ok(())
     }
