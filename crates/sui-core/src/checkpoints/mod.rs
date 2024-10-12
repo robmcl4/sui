@@ -810,12 +810,19 @@ impl CheckpointBuilder {
         }
     }
 
-    async fn run(mut self, startup_wait: tokio::sync::oneshot::Receiver<()>) {
+    async fn run(
+        mut self,
+        startup_wait: tokio::sync::oneshot::Receiver<tokio::sync::oneshot::Sender<()>>,
+    ) {
         info!("CheckpointBuilder waiting for startup signal");
-        startup_wait.await.ok();
+        let mut built_notify = Some(startup_wait.await.unwrap());
         info!("Starting CheckpointBuilder");
         loop {
             self.maybe_build_checkpoints().await;
+
+            if let Some(notify) = built_notify.take() {
+                notify.send(()).unwrap();
+            }
 
             self.notify.notified().await;
         }
@@ -2107,8 +2114,8 @@ impl CheckpointService {
         max_checkpoint_size_bytes: usize,
     ) -> (
         Arc<Self>,
-        JoinSet<()>,                      /* Handle to tasks */
-        tokio::sync::oneshot::Sender<()>, /* builder start-up sender */
+        JoinSet<()>, /* Handle to tasks */
+        tokio::sync::oneshot::Sender<tokio::sync::oneshot::Sender<()>>, /* builder start-up sender */
     ) {
         info!(
             "Starting checkpoint service with {max_transactions_per_checkpoint} max_transactions_per_checkpoint and {max_checkpoint_size_bytes} max_checkpoint_size_bytes"
@@ -2414,7 +2421,9 @@ mod tests {
             3,
             100_000,
         );
-        startup.send(()).unwrap();
+        let (tx, rx) = tokio::sync::oneshot::channel();
+        startup.send(tx).unwrap();
+        rx.await.unwrap();
 
         checkpoint_service
             .write_and_notify_checkpoint_for_testing(&epoch_store, p(0, vec![4], 0))

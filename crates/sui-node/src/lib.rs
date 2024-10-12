@@ -1358,9 +1358,12 @@ impl SuiNode {
             .await;
 
         info!("consensus manager started");
+        let (tx, rx) = tokio::sync::oneshot::channel();
         startup_sender
-            .send(())
+            .send(tx)
             .expect("Failed to send startup signal");
+
+        rx.await.expect("Failed to receive startup signal");
 
         if epoch_store.authenticator_state_enabled() {
             Self::start_jwk_updater(
@@ -1396,7 +1399,7 @@ impl SuiNode {
     ) -> (
         Arc<CheckpointService>,
         JoinSet<()>,
-        tokio::sync::oneshot::Sender<()>,
+        tokio::sync::oneshot::Sender<tokio::sync::oneshot::Sender<()>>,
     ) {
         let epoch_start_timestamp_ms = epoch_store.epoch_start_state().epoch_start_timestamp_ms();
         let epoch_duration_ms = epoch_store.epoch_start_state().epoch_duration_ms();
