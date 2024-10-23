@@ -1399,7 +1399,6 @@ impl AuthorityPerEpochStore {
                         let shared_locks = shared_locks
                             .get_or_init(|| {
                                 self.get_shared_locks(key)
-                                    .expect("reading shared locks should not fail")
                                     .map(|locks| locks.into_iter().collect())
                             })
                             .as_ref()

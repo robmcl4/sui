@@ -4756,7 +4756,6 @@ async fn test_shared_object_transaction_ok() {
     let shared_object_version = authority
         .epoch_store_for_testing()
         .get_shared_locks(&certificate.key())
-        .expect("Reading shared locks should not fail")
         .expect("Locks should be set")
         .into_iter()
         .find_map(|(object_id, version)| {
@@ -4873,7 +4872,6 @@ async fn test_consensus_commit_prologue_generation() {
         authority_state
             .epoch_store_for_testing()
             .get_shared_locks(txn_key)
-            .unwrap()
             .expect("locks should be set")
             .iter()
             .filter_map(|(id, seq)| {
@@ -6229,7 +6227,6 @@ async fn test_consensus_handler_congestion_control_transaction_cancellation() {
     let shared_object_version = authority
         .epoch_store_for_testing()
         .get_shared_locks(&cancelled_txn.key())
-        .expect("Reading shared locks should not fail")
         .expect("locks should be set")
         .into_iter()
         .collect::<HashMap<_, _>>();

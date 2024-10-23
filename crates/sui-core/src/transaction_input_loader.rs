@@ -18,7 +18,7 @@ use sui_types::{
         ReceivingObjectReadResult, ReceivingObjectReadResultKind, ReceivingObjects, TransactionKey,
     },
 };
-use tracing::{error, instrument};
+use tracing::instrument;
 
 pub(crate) struct TransactionInputLoader {
     cache: Arc<dyn ObjectCacheRead>,
