@@ -161,6 +161,7 @@ pub(crate) enum GovernanceActionType {
     UpdateTokenPrices,
     UpgradeEVMContract,
     AddSuiTokens,
+    SuiTokenRegistration,
     AddEVMTokens,
 }
 

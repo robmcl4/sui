@@ -200,7 +200,7 @@ fn process_sui_event(
                     tx_digest: tx.transaction.digest().inner().to_vec(),
                     sender: ev.sender.to_vec(),
                     timestamp_ms,
-                    action: GovernanceActionType::AddSuiTokens,
+                    action: GovernanceActionType::SuiTokenRegistration,
                     data: serde_json::to_value(event)?,
                 }))
             }
