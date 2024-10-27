@@ -1,22 +1,24 @@
 # config.yaml format:
 
 # URL of the remote store
-# remote_store_url: <url>
+remote_store_url: https://bridge-rpc.testnet.sui.io:443/rest
+sui_rpc_url: https://rpc.testnet.sui.io:443
 # URL for Ethereum RPC
-# eth_rpc_url: <url>
+eth_rpc_url: https://rpc-sepolia.flashbots.net/
+eth_ws_url: https://rpc-sepolia.flashbots.net/
 # Database connection URL
-# db_url: <url>
+db_url: postgres://postgres:postgrespw@localhost:5432
 # Path to the checkpoints
-# checkpoints_path: <path>
+checkpoints_path: ./checkpoints
 # Number of concurrent operations
-# concurrency: 1
+concurrency: 1
 # Bridge genesis checkpoint in SUI, for testnet = 43917829
-# bridge_genesis_checkpoint: <sui bridge genesis checkpoint>
+sui_bridge_genesis_checkpoint: 43917829
 # Ethereum to Sui bridge contract address
-# eth_sui_bridge_contract_address: <contract_address>
+eth_sui_bridge_contract_address: 0xAE68F87938439afEEDd6552B0E83D2CbC2473623
 # Starting block number
-# start_block: <indexing_start_block>
+eth_bridge_genesis_block: 5997013
 # Client metric URL
-# metric_url: <url>
+metric_url: 0.0.0.0
 # Client metric port
-# metric_port: <port>
+metric_port: 9009

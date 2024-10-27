@@ -1,6 +1,18 @@
-// Copyright (c) Mysten Labs, Inc.
-// SPDX-License-Identifier: Apache-2.0
 // @generated automatically by Diesel CLI.
+
+diesel::table! {
+    data_audits (id) {
+        id -> Int4,
+        chain_id -> Int4,
+        status -> Text,
+        start_time -> Timestamp,
+        from_nonce -> Int8,
+        to_nonce -> Int8,
+        current_nonce -> Nullable<Int8>,
+        end_time -> Nullable<Timestamp>,
+        incorrect_data_count -> Nullable<Int4>,
+    }
+}
 
 diesel::table! {
     progress_store (task_name) {
@@ -60,7 +72,7 @@ diesel::table! {
 }
 
 diesel::table! {
-    governance_actions (txn_digest) {
+    governance_actions (id) {
         id -> Int8,
         nonce -> Nullable<Int8>,
         data_source -> Text,
@@ -73,6 +85,7 @@ diesel::table! {
 }
 
 diesel::allow_tables_to_appear_in_same_query!(
+    data_audits,
     progress_store,
     sui_error_transactions,
     governance_actions,
