@@ -1,7 +1,7 @@
 {
-	"name": "@mysten/kms",
+	"name": "@mysten/signers",
 	"version": "0.0.5",
-	"description": "A collection of KMS signers for various cloud providers",
+	"description": "A collection of signer implementations for various cloud providers and passkeys",
 	"license": "Apache-2.0",
 	"author": "Mysten Labs <build@mystenlabs.com>",
 	"type": "commonjs",
@@ -50,8 +50,7 @@
 		"@mysten/sui": "workspace:*",
 		"@noble/curves": "^1.4.2",
 		"@noble/hashes": "^1.4.0",
-		"asn1-ts": "^8.0.2",
-		"aws4fetch": "^1.0.20"
+		"asn1-ts": "^8.0.2"
 	},
 	"engines": {
 		"node": ">=20"
