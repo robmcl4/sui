@@ -1693,7 +1693,10 @@ impl ProtocolConfig {
 
     pub fn consensus_linearizer_collect_subdag_v2(&self) -> bool {
         let res = self.feature_flags.consensus_linearizer_collect_subdag_v2;
-        assert!(!res || self.gc_depth() > 0, "The consensus linearizer collect sub dag V2 requires GC to be enabled");
+        assert!(
+            !res || self.gc_depth() > 0,
+            "The consensus linearizer collect sub dag V2 requires GC to be enabled"
+        );
         res
     }
 }
@@ -2974,6 +2977,11 @@ impl ProtocolConfig {
 
                     if chain != Chain::Mainnet {
                         cfg.feature_flags.uncompressed_g1_group_elements = true;
+                    }
+
+                    if chain != Chain::Mainnet && chain != Chain::Testnet {
+                        cfg.consensus_gc_depth = Some(60);
+                        cfg.feature_flags.consensus_linearizer_collect_subdag_v2 = true;
                     }
                 }
                 // Use this template when making changes:
