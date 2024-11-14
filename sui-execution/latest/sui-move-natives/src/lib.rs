@@ -41,7 +41,10 @@ use crate::crypto::poseidon::PoseidonBN254CostParams;
 use crate::crypto::zklogin;
 use crate::crypto::zklogin::{CheckZkloginIdCostParams, CheckZkloginIssuerCostParams};
 use better_any::{Tid, TidAble};
-use crypto::vdf::{self, VDFCostParams};
+use crypto::{
+    attestation,
+    vdf::{self, VDFCostParams},
+};
 use move_binary_format::errors::{PartialVMError, PartialVMResult};
 use move_core_types::{
     annotated_value as A,
@@ -1062,6 +1065,11 @@ pub fn all_natives(silent: bool, protocol_config: &ProtocolConfig) -> NativeFunc
             "ecdsa_k1",
             "secp256k1_keypair_from_seed",
             make_native!(ecdsa_k1::secp256k1_keypair_from_seed),
+        ),
+        (
+            "attestation",
+            "nitro_attestation_verify_inner",
+            make_native!(attestation::nitro_attestation_verify_inner),
         ),
     ];
     let sui_framework_natives_iter =

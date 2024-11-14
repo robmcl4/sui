@@ -1085,9 +1085,9 @@ checksum = "7460f7dd8e100147b82a63afca1a20eb6c231ee36b90ba7272e14951cb58af59"
 
 [[package]]
 name = "autocfg"
-version = "1.1.0"
+version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
+checksum = "ace50bade8e6234aa140d9a2f552bbee1db4d353f69b8217bc503490fc1a9f26"
 
 [[package]]
 name = "aws-config"
@@ -1682,7 +1682,7 @@ dependencies = [
  "hyper-util",
  "pin-project-lite",
  "rustls 0.23.12",
- "rustls-pemfile 2.1.2",
+ "rustls-pemfile 2.2.0",
  "rustls-pki-types",
  "tokio",
  "tokio-rustls 0.26.0",
@@ -5314,7 +5314,7 @@ dependencies = [
  "hyper-rustls 0.27.2",
  "hyper-util",
  "ring 0.17.8",
- "rustls-pemfile 2.1.2",
+ "rustls-pemfile 2.2.0",
  "serde",
  "serde_json",
  "thiserror",
@@ -9087,7 +9087,7 @@ dependencies = [
  "rand 0.8.5",
  "reqwest 0.12.5",
  "ring 0.17.8",
- "rustls-pemfile 2.1.2",
+ "rustls-pemfile 2.2.0",
  "serde",
  "serde_json",
  "snafu",
@@ -9373,6 +9373,18 @@ name = "p256"
 version = "0.13.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c9863ad85fa8f4460f9c48cb909d38a0d689dba1f6f6988a5e3e0d31071bcd4b"
+dependencies = [
+ "ecdsa 0.16.9",
+ "elliptic-curve 0.13.8",
+ "primeorder",
+ "sha2 0.10.8",
+]
+
+[[package]]
+name = "p384"
+version = "0.13.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "70786f51bcc69f6a4c0360e063a4cac5419ef7c5cd5b3c99ad70f3be5ba79209"
 dependencies = [
  "ecdsa 0.16.9",
  "elliptic-curve 0.13.8",
@@ -10885,7 +10897,7 @@ dependencies = [
  "quinn",
  "rustls 0.23.12",
  "rustls-native-certs 0.7.1",
- "rustls-pemfile 2.1.2",
+ "rustls-pemfile 2.2.0",
  "rustls-pki-types",
  "serde",
  "serde_json",
@@ -11454,7 +11466,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a88d6d420651b496bdd98684116959239430022a115c1240e6c3993be0b15fba"
 dependencies = [
  "openssl-probe",
- "rustls-pemfile 2.1.2",
+ "rustls-pemfile 2.2.0",
  "rustls-pki-types",
  "schannel",
  "security-framework",
@@ -11471,19 +11483,18 @@ dependencies = [
 
 [[package]]
 name = "rustls-pemfile"
-version = "2.1.2"
+version = "2.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "29993a25686778eb88d4189742cd713c9bce943bc54251a33509dc63cbacf73d"
+checksum = "dce314e5fee3f39953d46bb63bb8a46d40c2f8fb7cc5a3b6cab2bde9721d6e50"
 dependencies = [
- "base64 0.22.1",
  "rustls-pki-types",
 ]
 
 [[package]]
 name = "rustls-pki-types"
-version = "1.7.0"
+version = "1.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "976295e77ce332211c0d24d92c0e83e50f5c5f046d11082cea19f3df13a3562d"
+checksum = "16f1201b3c9a7ee8039bcadc17b7e605e2945b27eee7631788c1bd2b0643674b"
 
 [[package]]
 name = "rustls-webpki"
@@ -14790,7 +14801,7 @@ dependencies = [
  "rand 0.8.5",
  "reqwest 0.12.5",
  "rustls 0.23.12",
- "rustls-pemfile 2.1.2",
+ "rustls-pemfile 2.2.0",
  "serde",
  "serde_json",
  "serde_with 3.9.0",
@@ -15536,6 +15547,7 @@ dependencies = [
  "bincode",
  "byteorder",
  "chrono",
+ "ciborium",
  "consensus-config",
  "coset",
  "criterion",
@@ -15568,6 +15580,7 @@ dependencies = [
  "num_enum 0.6.1",
  "once_cell",
  "p256",
+ "p384",
  "parking_lot 0.12.1",
  "passkey-authenticator",
  "passkey-client",
@@ -15577,9 +15590,12 @@ dependencies = [
  "proptest-derive",
  "rand 0.8.5",
  "roaring",
+ "rustls 0.23.12",
+ "rustls-webpki 0.102.6",
  "schemars",
  "serde",
  "serde-name",
+ "serde_bytes",
  "serde_json",
  "serde_with 3.9.0",
  "serde_yaml 0.8.26",
@@ -15599,6 +15615,7 @@ dependencies = [
  "tracing",
  "typed-store-error",
  "url",
+ "x509-parser",
 ]
 
 [[package]]
@@ -16662,7 +16679,7 @@ dependencies = [
  "percent-encoding",
  "pin-project",
  "prost 0.13.3",
- "rustls-pemfile 2.1.2",
+ "rustls-pemfile 2.2.0",
  "socket2 0.5.6",
  "tokio",
  "tokio-rustls 0.26.0",

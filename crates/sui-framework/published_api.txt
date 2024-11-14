@@ -1258,6 +1258,24 @@ transfer_impl
 receive_impl
 	fun
 	0x2::transfer
+Clock
+	public struct
+	0x2::clock
+timestamp_ms
+	public fun
+	0x2::clock
+create
+	fun
+	0x2::clock
+consensus_commit_prologue
+	fun
+	0x2::clock
+nitro_attestation_verify_inner
+	public fun
+	0x2::attestation
+nitro_attestation_verify
+	public fun
+	0x2::attestation
 Field
 	public struct
 	0x2::dynamic_field
@@ -1765,18 +1783,6 @@ put_back
 destroy
 	public fun
 	0x2::borrow
-Clock
-	public struct
-	0x2::clock
-timestamp_ms
-	public fun
-	0x2::clock
-create
-	fun
-	0x2::clock
-consensus_commit_prologue
-	fun
-	0x2::clock
 Url
 	public struct
 	0x2::url

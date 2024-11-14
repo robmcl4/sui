@@ -27,6 +27,7 @@ use crate::{base_types::RESOLVED_STD_OPTION, id::RESOLVED_SUI_ID};
 pub mod error;
 
 pub mod accumulator;
+pub mod attestation;
 pub mod authenticator_state;
 pub mod balance;
 pub mod base_types;
@@ -85,13 +86,12 @@ pub mod transaction;
 pub mod transaction_executor;
 pub mod transfer;
 pub mod type_input;
-pub mod versioned;
-pub mod zk_login_authenticator;
-pub mod zk_login_util;
-
 #[cfg(any(test, feature = "test-utils"))]
 #[path = "./unit_tests/utils.rs"]
 pub mod utils;
+pub mod versioned;
+pub mod zk_login_authenticator;
+pub mod zk_login_util;
 
 macro_rules! built_in_ids {
     ($($addr:ident / $id:ident = $init:expr);* $(;)?) => {
