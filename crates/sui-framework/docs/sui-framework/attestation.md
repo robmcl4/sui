@@ -23,6 +23,7 @@ title: Module `0x2::attestation`
 @param pcr1: Hash of linux kernel and bootstrap.
 @param pcr2: Hash of application.
 @param timestamp: The timestamp ms from clock object.
+
 See https://docs.aws.amazon.com/enclaves/latest/user/set-up-attestation.html#where
 If the attestation verifies against the pcrs and against the root of aws trust, also the enclave public key equals to the attestation document's user data, return yes.
 

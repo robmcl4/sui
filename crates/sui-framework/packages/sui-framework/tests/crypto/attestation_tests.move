@@ -5,9 +5,13 @@
 #[test_only]
 module sui::attestation_tests {
     use sui::attestation;
-    
+    use sui::clock;
+    use sui::test_scenario;
+
     #[test]
     fun test_attestation_verify() {
+        let mut scenario = test_scenario::begin(@0x1);
+        let ctx = test_scenario::ctx(&mut scenario);
         let mut clock = clock::create_for_testing(ctx);
         clock.set_for_testing(1731627987382);
 
@@ -17,6 +21,8 @@ module sui::attestation_tests {
         let pcr1 = x"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
         let pcr2 = x"000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
         let verify = attestation::nitro_attestation_verify(&attestation, &enclave_pk, &pcr0, &pcr1, &pcr2, &clock);
-        assert!(verify == true)
+        assert!(verify == true);
+        clock::destroy_for_testing(clock);
+        test_scenario::end(scenario);
     }
 }

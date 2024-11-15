@@ -19,7 +19,7 @@ pub fn nitro_attestation_verify_inner(
     mut args: VecDeque<Value>,
 ) -> PartialVMResult<NativeResult> {
     debug_assert!(ty_args.is_empty());
-    debug_assert!(args.len() == 5);
+    debug_assert!(args.len() == 6);
 
     // todo: figure out cost
 
