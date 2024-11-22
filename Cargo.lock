@@ -15738,6 +15738,7 @@ dependencies = [
  "telemetry-subscribers",
  "tempfile",
  "tokio",
+ "tracing",
  "typed-store",
 ]
 
