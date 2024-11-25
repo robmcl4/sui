@@ -57,6 +57,17 @@ pub struct PipelineConfig {
     pub skip_watermark: bool,
 }
 
+impl Default for PipelineConfig {
+    fn default() -> Self {
+        Self {
+            write_concurrency: 5,
+            collect_interval: Duration::from_millis(500),
+            watermark_interval: Duration::from_millis(500),
+            skip_watermark: false,
+        }
+    }
+}
+
 /// Processed values associated with a single checkpoint. This is an internal type used to
 /// communicate between the processor and the collector parts of the pipeline.
 struct Indexed<P: Processor> {
