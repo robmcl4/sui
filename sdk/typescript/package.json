@@ -62,6 +62,10 @@
 			"import": "./dist/esm/keypairs/secp256r1/index.js",
 			"require": "./dist/cjs/keypairs/secp256r1/index.js"
 		},
+		"./keypairs/passkey": {
+			"import": "./dist/esm/keypairs/passkey/index.js",
+			"require": "./dist/cjs/keypairs/passkey/index.js"
+		},
 		"./multisig": {
 			"import": "./dist/esm/multisig/index.js",
 			"require": "./dist/cjs/multisig/index.js"
@@ -156,6 +160,7 @@
 		"gql.tada": "^1.8.2",
 		"graphql": "^16.9.0",
 		"tweetnacl": "^1.0.3",
-		"valibot": "^0.36.0"
+		"valibot": "^0.36.0",
+		"@simplewebauthn/typescript-types": "^7.4.0"
 	}
 }
