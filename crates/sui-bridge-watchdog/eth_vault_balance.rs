@@ -12,37 +12,48 @@ use sui_bridge::metered_eth_provider::MeteredEthHttpProvier;
 use tokio::time::Duration;
 use tracing::{error, info};
 
-const TEN_ZEROS: u64 = 10_u64.pow(10);
+#[derive(Debug)]
+pub enum VaultAsset {
+    WETH,
+    USDT,
+}
 
-pub struct EthVaultBalance {
+pub struct EthereumVaultBalance {
     coin_contract: EthERC20<Provider<MeteredEthHttpProvier>>,
+    asset: VaultAsset,
+    decimals: u8,
     vault_address: EthAddress,
-    ten_zeros: U256,
     metric: IntGauge,
 }
 
-impl EthVaultBalance {
+impl EthereumVaultBalance {
     pub fn new(
         provider: Arc<Provider<MeteredEthHttpProvier>>,
         vault_address: EthAddress,
         coin_address: EthAddress, // for now this only support one coin which is WETH
+        asset: VaultAsset,
         metric: IntGauge,
-    ) -> Self {
-        let ten_zeros = U256::from(TEN_ZEROS);
+    ) -> anyhow::Result<Self> {
         let coin_contract = EthERC20::new(coin_address, provider);
-        Self {
+        let decimals = coin_contract
+            .decimals()
+            .call()
+            .await
+            .map_err(|e| anyhow::anyhow!("Failed to get decimals from token contract: {e}"))?;
+        Ok(Self {
             coin_contract,
             vault_address,
-            ten_zeros,
+            decimals,
+            asset,
             metric,
-        }
+        })
     }
 }
 
 #[async_trait]
-impl Observable for EthVaultBalance {
+impl Observable for EthereumVaultBalance {
     fn name(&self) -> &str {
-        "EthVaultBalance"
+        "EthereumVaultBalance"
     }
 
     async fn observe_and_report(&self) {
@@ -55,13 +66,20 @@ impl Observable for EthVaultBalance {
             Ok(balance) => {
                 // Why downcasting is safe:
                 // 1. On Ethereum we only take the first 8 decimals into account,
-                // meaning the trailing 10 digits can be ignored
+                // meaning the trailing 10 digits can be ignored. For other assets,
+                // we will also assume this max level of precision for metrics purposes.
                 // 2. i64::MAX is 9_223_372_036_854_775_807, with 8 decimal places is
                 // 92_233_720_368. We likely won't see any balance higher than this
                 // in the next 12 months.
-                let balance = (balance / self.ten_zeros).as_u64() as i64;
-                self.metric.set(balance);
-                info!("Eth Vault Balance: {:?}", balance);
+                // For USDT, for example, this will be 10^6 - 8 = 10^(-2) = 0.01,
+                // therefore we will add 2 zeroes of precision.
+                let denom = U256::from(10).pow(self.decimals - 8);
+                let normalized_balance = (balance / denom).as_u64() as i64;
+                self.metric.set(normalized_balance);
+                info!(
+                    "{:?} Vault Balance: {:?} ({:?} {:?})",
+                    self.asset, balance, normalized_balance, self.asset,
+                );
             }
             Err(e) => {
                 error!("Error getting balance from vault: {:?}", e);
